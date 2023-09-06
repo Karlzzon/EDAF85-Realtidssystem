@@ -5,10 +5,17 @@ public class Time {
     private int minutes;
     private int seconds;
 
+    private int alarmHours;
+    private int alarmMinutes;
+    private int alarmSeconds;
+
     public Time() {
         this.hours = 0;
         this.minutes = 0;
         this.seconds = 0;
+        this.alarmHours = 0;
+        this.alarmMinutes = 0;
+        this.alarmSeconds = 0;
     }
 
     public int getHours() {
@@ -33,6 +40,30 @@ public class Time {
 
     public void setSeconds(int seconds) {
         this.seconds = seconds;
+    }
+
+    public void setAlarmHours(int hours) {
+        this.alarmHours = hours;
+    }
+
+    public void setAlarmMinutes(int minutes) {
+        this.alarmMinutes = minutes;
+    }
+
+    public void setAlarmSeconds(int seconds) {
+        this.alarmSeconds = seconds;
+    }
+
+    public int getAlarmHours() {
+        return this.alarmHours;
+    }
+
+    public int getAlarmMinutes() {
+        return this.alarmMinutes;
+    }
+
+    public int getAlarmSeconds() {
+        return this.alarmSeconds;
     }
 
     public void tick() {

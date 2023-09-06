@@ -1,4 +1,3 @@
-
 import java.util.concurrent.Semaphore;
 import clock.AlarmClockEmulator;
 import clock.io.ClockInput;
@@ -15,7 +14,11 @@ public class ClockMain {
         Time t = new Time();
         InputThread inputThread = new InputThread(t, in, out, timeSemaphore);
         TickThread tickThread = new TickThread(t, out, timeSemaphore);
+        AlarmThread alarmThread = new AlarmThread(t, out);
+
         tickThread.start();
+        alarmThread.start();
         inputThread.start();
+
     }
 }

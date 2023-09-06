@@ -1,4 +1,3 @@
-import java.time.Clock;
 import java.util.concurrent.Semaphore;
 import clock.io.*;
 import clock.io.ClockInput.UserInput;
@@ -33,12 +32,14 @@ public class InputThread extends Thread {
                     timeSemaphore.release();
                 } else if (c == Choice.SET_ALARM) {
                     System.out.println("input for set alarm");
-
+                    time.setAlarmHours(userInput.hours());
+                    time.setAlarmMinutes(userInput.minutes());
+                    time.setAlarmSeconds(userInput.seconds());
                 } else if (c == Choice.TOGGLE_ALARM) {
                     System.out.println("input for toggle alarm");
                     help = !help;
                     out.setAlarmIndicator(help);
-                    
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

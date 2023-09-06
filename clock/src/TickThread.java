@@ -21,7 +21,7 @@ public class TickThread extends Thread {
                 out.displayTime(time.getHours(), time.getMinutes(), time.getSeconds());
                 time.tick();
                 timeSemaphore.release();
-                Thread.sleep(985);
+                Thread.sleep(985); // sida 32 -34 ekvation
 
             } catch (Exception e) {
                 e.printStackTrace();
