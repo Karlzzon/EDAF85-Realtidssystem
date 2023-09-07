@@ -14,20 +14,26 @@ public class TickThread extends Thread {
         this.alarmSemaphore = alarmSemaphore;
     }
 
+    long t = System.currentTimeMillis();
+    long diff;
+
     @Override
     public void run() {
         while (true) {
             try {
                 timeSemaphore.acquire();
-                out.displayTime(time.getHours(), time.getMinutes(), time.getSeconds());
                 time.tick();
+                out.displayTime(time.getHours(), time.getMinutes(), time.getSeconds());
                 if (time.match()) {
                     alarmSemaphore.release(); // for signaling the alarmThread(to avoid having time inside the
                                               // alarmThread)
                 }
 
                 timeSemaphore.release();
-                Thread.sleep(985); // sida 32 -34 ekvation
+                t += 1000;
+                diff = t - System.currentTimeMillis();
+                if (diff > 0)
+                    Thread.sleep(diff);
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,9 +1,9 @@
-
 public class Time {
-
     private int hours;
     private int minutes;
     private int seconds;
+
+    boolean alarmON = false;
 
     private int alarmHours;
     private int alarmMinutes;
@@ -69,10 +69,17 @@ public class Time {
     public boolean match() {
         if (this.hours == this.alarmHours &&
                 this.minutes == this.alarmMinutes &&
-                this.seconds == this.alarmSeconds) {
+                this.seconds == this.alarmSeconds &&
+                this.alarmON) {
+            System.out.println("match");
             return true;
         }
         return false;
+    }
+
+    public boolean alarmToggle() {
+        this.alarmON = !this.alarmON;
+        return this.alarmON;
     }
 
     public void tick() {

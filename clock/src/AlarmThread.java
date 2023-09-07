@@ -1,5 +1,4 @@
 import java.util.concurrent.Semaphore;
-
 import clock.io.ClockOutput;
 
 public class AlarmThread extends Thread {
@@ -18,10 +17,16 @@ public class AlarmThread extends Thread {
         while (true) {
             try {
                 alarmSemaphore.acquire();
-                while (blinkCount < 3) {
+                long t = System.currentTimeMillis();
+                long diff;
+                while (blinkCount < 20) {
                     out.alarm();
                     blinkCount++;
-                    Thread.sleep(500);
+
+                    t += 1000;
+                    diff = t - System.currentTimeMillis();
+                    if (diff > 0)
+                        Thread.sleep(diff);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

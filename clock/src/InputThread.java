@@ -36,10 +36,10 @@ public class InputThread extends Thread {
                     time.setAlarmMinutes(userInput.minutes());
                     time.setAlarmSeconds(userInput.seconds());
                 } else if (c == Choice.TOGGLE_ALARM) {
+                    timeSemaphore.acquire();
                     System.out.println("input for toggle alarm");
-                    help = !help;
-                    out.setAlarmIndicator(help);
-
+                    out.setAlarmIndicator(time.alarmToggle());
+                    timeSemaphore.release();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

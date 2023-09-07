@@ -11,8 +11,8 @@ public class ClockMain {
         ClockOutput out = emulator.getOutput();
 
         Semaphore timeSemaphore = new Semaphore(1);
-        Time t = new Time();
         Semaphore alarmSemaphore = new Semaphore(0);
+        Time t = new Time();
 
         InputThread inputThread = new InputThread(t, in, out, timeSemaphore);
         TickThread tickThread = new TickThread(t, out, timeSemaphore, alarmSemaphore);
