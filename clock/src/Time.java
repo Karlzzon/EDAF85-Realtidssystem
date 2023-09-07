@@ -66,6 +66,15 @@ public class Time {
         return this.alarmSeconds;
     }
 
+    public boolean match() {
+        if (this.hours == this.alarmHours &&
+                this.minutes == this.alarmMinutes &&
+                this.seconds == this.alarmSeconds) {
+            return true;
+        }
+        return false;
+    }
+
     public void tick() {
         this.seconds++;
         if (this.seconds == 60) {

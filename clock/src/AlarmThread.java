@@ -1,27 +1,32 @@
+import java.util.concurrent.Semaphore;
+
 import clock.io.ClockOutput;
 
 public class AlarmThread extends Thread {
-    Time time;
+    Semaphore alarmSemaphore;
     ClockOutput out;
+    int blinkCount;
 
-    public AlarmThread(Time t, ClockOutput out) {
-        this.time = t;
+    public AlarmThread(Semaphore t, ClockOutput out) {
+        this.alarmSemaphore = t;
         this.out = out;
+        this.blinkCount = 0;
     }
 
     @Override
     public void run() {
         while (true) {
             try {
-                if (time.getHours() == time.getAlarmHours() && time.getMinutes() == time.getAlarmMinutes()
-                        && time.getSeconds() == time.getAlarmSeconds()) {
-                    for (int i = 0; i < 10; i++) {
-                        out.alarm();
-                    }
+                alarmSemaphore.acquire();
+                while (blinkCount < 3) {
+                    out.alarm();
+                    blinkCount++;
+                    Thread.sleep(500);
                 }
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            blinkCount = 0;
         }
     }
 }

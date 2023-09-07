@@ -12,9 +12,11 @@ public class ClockMain {
 
         Semaphore timeSemaphore = new Semaphore(1);
         Time t = new Time();
+        Semaphore alarmSemaphore = new Semaphore(0);
+
         InputThread inputThread = new InputThread(t, in, out, timeSemaphore);
-        TickThread tickThread = new TickThread(t, out, timeSemaphore);
-        AlarmThread alarmThread = new AlarmThread(t, out);
+        TickThread tickThread = new TickThread(t, out, timeSemaphore, alarmSemaphore);
+        AlarmThread alarmThread = new AlarmThread(alarmSemaphore, out);
 
         tickThread.start();
         alarmThread.start();
