@@ -21,16 +21,14 @@ public class passengerThread extends Thread {
 
             passenger.begin();
 
-            mon.arriveOnFloor(fromfloor);
-            mon.waitForEntrance(fromfloor);
+            mon.boardingHandler(fromfloor, tofloor);
             passenger.enterLift();
-            mon.stoppedWalking();
-            mon.enteredOnFloor(fromfloor, tofloor);
+            mon.stopped();
 
-            mon.waitforExit(tofloor);
+            mon.exitingHandler(tofloor);
             passenger.exitLift();
-            mon.stoppedWalking();
-            mon.exitOnFloor(tofloor);
+            mon.stopped();
+
             passenger.end();
         }
     }

@@ -3,18 +3,15 @@ import lift.LiftView;
 public class monitor {
     private int[] toEnter; // number of passengers waiting to enter the lift at each floor
     private int[] toExit; // number of passengers (in lift) waiting to exit at each floor
-
     private int currentFloor;
     private int nextFloor;
-
     private int passengersInLift;
-    private boolean moving;
     private String direction;
-
     private LiftView view;
-
     private int MAX_PASSENGERS;
-    int isWalking = 0;
+    private int NBR_FLOORS;
+    private boolean doorsOpen;
+    private int transitioning;
 
     public monitor(LiftView view, int NBR_FLOORS, int MAX_PASSENGERS) {
         this.toEnter = new int[NBR_FLOORS];
@@ -24,7 +21,9 @@ public class monitor {
         this.view = view;
         this.direction = "UP";
         this.MAX_PASSENGERS = MAX_PASSENGERS;
-        this.moving = true;
+        this.doorsOpen = false;
+        this.transitioning = 0;
+        this.NBR_FLOORS = NBR_FLOORS;
     }
 
     public int getCurrentFloor() {
@@ -41,14 +40,19 @@ public class monitor {
 
     public synchronized void preMove() {
         try {
-            view.openDoors(currentFloor);
-            notifyAll();
-            while ((toEnter[currentFloor] > 0 && !isFull()) || toExit[currentFloor] > 0 || isWalking > 0) {
-                this.moving = false;
+            while ((toEnter[currentFloor] > 0 && !isFull()) || toExit[currentFloor] > 0 || transitioning > 0) {
+                if (!doorsOpen) {
+                    view.openDoors(currentFloor);
+                    doorsOpen = true;
+                    notifyAll();
+                }
                 wait();
             }
-            view.closeDoors();
-            this.moving = true;
+            if (doorsOpen) {
+                view.closeDoors();
+                doorsOpen = false;
+            }
+            notifyAll();
         } catch (Exception e) {
         }
     }
@@ -61,7 +65,7 @@ public class monitor {
             currentFloor--;
             nextFloor--;
         }
-        if (currentFloor == 6) {
+        if (currentFloor == NBR_FLOORS - 1) {
             direction = "DOWN";
             nextFloor -= 2;
         }
@@ -69,50 +73,40 @@ public class monitor {
             direction = "UP";
             nextFloor += 2;
         }
+        notifyAll();
     }
 
-    public synchronized void arriveOnFloor(int fromFloor) {
+    public synchronized void boardingHandler(int fromFloor, int toFloor) {
         toEnter[fromFloor]++;
-        view.showDebugInfo(toEnter, toExit);
-    }
-
-    public synchronized void enteredOnFloor(int fromFloor, int toFloor) {
-        passengersInLift++;
+        try {
+            while (fromFloor != currentFloor || isFull() || !doorsOpen) {
+                wait();
+            }
+        } catch (Exception e) {
+        }
         toEnter[fromFloor]--;
         toExit[toFloor]++;
-        view.showDebugInfo(toEnter, toExit);
-        isWalking++;
+        passengersInLift++;
+        transitioning++;
         notifyAll();
     }
 
-    public synchronized void waitForEntrance(int floor) {
-        while (floor != currentFloor || isFull() || moving) {
+    public synchronized void exitingHandler(int toFloor) {
+        while (toFloor != currentFloor || !doorsOpen) {
             try {
                 wait();
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
             }
         }
-    }
-
-    public synchronized void waitforExit(int toFloor) {
-        while (toFloor != currentFloor) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-            }
-        }
-    }
-
-    public synchronized void exitOnFloor(int floor) {
-        toExit[floor]--;
-        view.showDebugInfo(toEnter, toExit);
+        toExit[toFloor]--;
         passengersInLift--;
-        isWalking++;
+        transitioning++;
         notifyAll();
+
     }
 
-    public synchronized void stoppedWalking() {
-        isWalking--;
+    public synchronized void stopped() {
+        transitioning--;
         notifyAll();
     }
 
