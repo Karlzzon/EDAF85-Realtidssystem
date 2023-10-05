@@ -18,13 +18,30 @@ public class Wash {
         water.start();
         spin.start();
 
-        while (true) {
-            int n = io.awaitButton();
-            System.out.println("user selected program " + n);
+        WashingProgram1 one = new WashingProgram1(io, temp, water, spin);
+        WashingProgram2 two = new WashingProgram2(io, temp, water, spin);
+        WashingProgram3 three = new WashingProgram3(io, temp, water, spin);
 
-            // TODO:
-            // if the user presses buttons 1-3, start a washing program
-            // if the user presses button 0, and a program has been started, stop it
+        while (true) {
+            int button = io.awaitButton();
+            System.out.println("user selected program " + button);
+
+            switch (button) {
+                case 0:
+                    one.interrupt();
+                    two.interrupt();
+                    three.interrupt();
+                    break;
+
+                case 1:
+                    one.start();
+                    break;
+                case 2:
+                    two.start();
+                    break;
+                case 3:
+                    three.start();
+            }
         }
     }
 };
